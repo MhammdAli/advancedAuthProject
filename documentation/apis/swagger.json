@@ -1,0 +1,734 @@
+{
+    "swagger" : "2.0",
+    "info": {
+        "title": "Auth Project", 
+        "version": "1.0",
+        "license": {
+            "name": "MIT",
+            "url": "https://muit.com"
+        },
+        "contact": {
+            "email": "mohammad.academy.961@gmail.com",
+            "name": "Mohammad"
+        }
+    },
+    "host": "localhost",
+    "schemes": ["http"],
+    "tags": [
+        {"name": "auth","description": "this endpoints is used for authentications purpose"}
+    ],
+    "paths": {
+        "/users" : {  
+            "post": {
+                "tags": ["auth"],
+                "description": "Create a user account\n",
+                "consumes" : ["application/json"],
+                "produces" : ["application/json"],
+
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body", 
+                        "required": true,
+                        "schema": {
+                            "type" : "object",
+                            "properties": {
+                                "firstName" : {
+                                    "type" : "string",
+                                    "minLength": 2,
+                                    "maxLength": 15, 
+                                    "title": "first Name",
+                                    "description": "first name to be valid must be at least 2 until 15 characters"
+                                },
+                                "lastName" : {
+                                    "type" : "string",
+                                    "minLength": 2,
+                                    "maxLength": 15, 
+                                    "title": "last Name",
+                                    "description": "last name to be valid must be at least 2 until 15 characters"
+                                },
+                                "email" : {
+                                    "$ref": "#/definitions/email"
+                                },
+                                "password" : {
+                                    "$ref": "#/definitions/password"
+                                },
+                                "confirmPassword" : {
+                                    "$ref": "#/definitions/password"
+                                },
+                                "gender" : {
+                                    "type" : "string",
+                                    "enum": ["mail","femail"],
+                                    "example" : "mail"
+                                },
+                                "address" : {
+                                    "$ref": "#/definitions/address"
+                                },
+                                "phone" : {
+                                    "$ref": "#/definitions/phone"
+                                }
+                            }
+                        }
+                    }
+                ],
+
+                "responses": {
+                    "200" : {
+                        "description": "",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "name" : {
+                                    "type" : "string",
+                                    "example" : "VERIFY_EMAIL",
+                                    "title": ""
+                                },
+                                "message" : {
+                                    "type" : "string",
+                                    "example" : "wait for the message to verify email"
+                                }
+                            }
+                        }
+                    },
+                    "422" : {
+                        "description": "",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "errors" : {
+                                    "type" : "object",
+                                    "properties": {
+                                        "email" : {
+                                            "properties": {
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "EMAIL_ALREADY_IN_USE",
+                                                    "description": "when Email is used by another user"
+                                                },
+                                                "message":{
+                                                    "type" : "string",
+                                                    "example" : "Email already in use please choose another email"
+                                                },
+                                                "value" : {
+                                                    "type" : "string",
+                                                    "example" : "example@gmail.com",
+                                                    "description": "the value which inserted by the user"
+                                                } 
+                                            }
+                                        },
+                                        "password" : {
+                                            "type" : "object",
+                                            "properties": {
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "UNIDENTICAL_PASSWORD | WEAK_PASSWORD",
+                                                    "description": "it send UNIDENTICAL_PASSWORD if confirm passowrd and password are unidentical. and at the end when cornfirm password and password are correct but password is weak it send WEAK_PASSWORD"
+                                                },
+                                                "message" : {
+                                                     "type" : "string",
+                                                     "example" : "password is unIdentical with confirmpassword | password is invalid"
+                                                },
+                                                "value" : {
+                                                     "type" : "string",
+                                                     "example" : "pass123"
+                                                }
+                                            }   
+                                        },
+                                        "gender" : {
+                                            "type" : "object", 
+                                            "properties": {
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "INVALID_VALUE",
+                                                    "description": "when wrong value is inserted"
+                                                },
+                                                "message" : {
+                                                    "type" : "string",
+                                                    "example" : "gender is invalid must be either femail or mail",
+                                                    "description": "value must be mail or femail in order to bypass"
+                                                },
+                                                "value" : {
+                                                    "type" : "string",
+                                                    "example" : "femaisl",
+                                                    "description": "the wrong value which was inserted"
+                                                }
+                                            }
+                                        },
+                                        "firstName" : {
+                                            "type" : "object",
+                                            "properties": {
+                                                "value" : {
+                                                    "type" : "string",
+                                                    "example" : "INVALID_NAME"
+                                                },
+                                                "message" : {
+                                                    "type" : "string",
+                                                    "example" : "firstName must be between 2 and 15 characters"
+                                                },
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "INVALID_NAME"
+                                                }
+                                            }
+                                        },
+                                        "lastName" : {
+                                            "type" : "object",
+                                            "properties": {
+                                                "value" : {
+                                                    "type" : "string",
+                                                    "example" : "INVALID_NAME"
+                                                },
+                                                "message" : {
+                                                    "type" : "string",
+                                                    "example" : "lastName must be between 2 and 15 characters"
+                                                },
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "INVALID_NAME"
+                                                }
+                                            }
+                                        },
+                                        "address.street" : {
+                                            "type" : "object",
+                                            "properties": {
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "MISSING_FIELD"
+                                                },
+                                                "message" : {
+                                                    "type" : "string",
+                                                    "example" : "address.street is required"
+                                                }
+                                            }
+                                        },
+                                        "address.city" : {
+                                            "type" : "object",
+                                            "properties": {
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "MISSING_FIELD"
+                                                },
+                                                "message" : {
+                                                    "type" : "string",
+                                                    "example" : "address.city is required"
+                                                }
+                                            }
+                                        },
+                                        "address.country" : {
+                                            "type" : "object",
+                                            "properties": {
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "MISSING_FIELD"
+                                                },
+                                                "message" : {
+                                                    "type" : "string",
+                                                    "example" : "address.country is required"
+                                                }
+                                            }
+                                        },
+                                        "address.postalCode" : {
+                                            "type" : "object",
+                                            "properties": {
+                                                "name" : {
+                                                    "type" : "string",
+                                                    "example" : "MISSING_FIELD"
+                                                },
+                                                "message" : {
+                                                    "type" : "string",
+                                                    "example" : "address.postalCode is required"
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description": "when connection with gmail for sending message is failed",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "message" : {
+                                    "type" : "string",
+                                    "example" : "something wen't wrong"
+                                },
+                                "name" : {
+                                    "type" : "string",
+                                    "example" : "SERVER_ERROR"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login" : {
+            "post": {
+                "tags": ["auth"],
+                "consumes" : ["application/json"],
+                "produces" : ["application/json"],
+                "summary": "",
+                "description": "",
+                "parameters": [
+                    { 
+                        "in": "body",
+                        "name": "",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type" : "object",
+                            "properties": {
+                                "email" : {
+                                    "$ref": "#/definitions/email"
+                                },
+                                "password" : {
+                                    "$ref": "#/definitions/password"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200" : {
+                       "$ref": "#/responses/tokens"
+                    },
+                    "401" : {
+                        "description": "this error accure when password is wrong",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "name" : {
+                                    "type" : "string",
+                                    "example" : "WRONG_PASSWORD"
+                                },
+                                "password" : {
+                                    "type" : "string",
+                                    "example" : "password is wrong"
+                                }
+                            }
+                        }
+                    },
+                    "422" : {
+                        "$ref": "#/responses/EmailNotExists"
+                    }
+                }
+            }
+        },
+        "/users/forgetpassword" : {
+            "patch": {
+                "tags": ["auth"],
+                "consumes" : ["application/json"],
+                "produces" : ["application/json"],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type" : "object",
+                            "description": "",
+                            "properties": {
+                                "email" : {
+                                    "$ref": "#/definitions/email"
+                                },
+                                "password" : {
+                                    "$ref": "#/definitions/password"
+                                },
+                                "confirmPassword" : {
+                                    "$ref": "#/definitions/password"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200" : {
+                        "description": "",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "name" : {
+                                    "type" : "string",
+                                    "example" : "VERIFY_EMAIL"
+                                },
+                                "message" : {
+                                    "type" : "string",
+                                    "example" : "wait for email message to verify the identity"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description": "this error happens when user change his password more than 3 times during one month",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "name" : {
+                                    "type" : "string",
+                                    "example" : "UNAUTHORIZED_RESET_PASSWORD"
+                                },
+                                "message" : {
+                                    "type" : "string",
+                                    "example" : "Unauthorized to change password please wait 28 days, 17 hours, 19 minutes, 17 seconds"
+                                },
+                                "remainingTime" : {
+                                    "type" : "object",
+                                    "properties": {
+                                        "days" : {
+                                            "type" : "number",
+                                            "example" : 28
+                                        },
+                                        "hours" : {
+                                            "type" : "number",
+                                            "example" : 17
+                                        },
+                                        "minutes" : {
+                                            "type" : "number",
+                                            "example" : 19
+                                        },
+                                        "seconds" : {
+                                            "type" : "number",
+                                            "example" : 17
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422" : {
+                        "description": "",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "email" : {
+                                    "properties": {
+                                        "name" : {
+                                            "type" : "string",
+                                            "example" : "INVALID_EMAIL"
+                                        },
+                                        "message":{
+                                            "type" : "string",
+                                            "example" : "email is invalid"
+                                        },
+                                        "value" : {
+                                            "type" : "string",
+                                            "example" : "example@.com"
+                                        } 
+                                    }
+                                },
+                                "password" : {
+                                    "type" : "object",
+                                    "description": "",
+                                    "properties": { 
+                                        "name" : {
+                                            "type" : "string",
+                                            "example" : "UNIDENTICAL_PASSWORD"
+                                        },
+                                        "message" : {
+                                            "type" : "string",
+                                            "example" : "password is unIdentical"
+                                        },
+                                        "value" : {
+                                            "type" : "string",
+                                            "example" : "H123$$"
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/refeshToken" : {
+            "post": {
+                "tags": ["auth"],
+                "consumes" : ["application/json"],
+                "produces" : ["application/json"],
+                "description": "it is used if you need to refresh your access token",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "type" : "object",
+                            "properties": {
+                                "refresh_token" : {
+                                    "type" : "string",
+                                    "description": "refresh token is required tp refresh the access token"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200" : { 
+                        "description": "refresh token can be",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "ACCESS_TOKEN" : {
+                                    "type" : "string"
+                                },
+                                "REFRESH_TOKEN" : {
+                                    "type" : "string",
+                                    "description": "refresh token it will return null if the refresh token does not generate new one.generating refresh token happens when refresh token remaining time to expire is 4 days"
+                                },
+                                "Token_type" : {
+                                    "type" : "string",
+                                    "example" : "bearer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/verify/email" : {
+            "get": {
+                "tags": ["auth"],
+                "description": "",
+                "consumes" : ["application/json"],
+                "produces" : ["application/json"],
+                "parameters": [
+                    {
+                        "required": true,
+                        "name": "code",
+                        "type": "string",
+                        "in": "path",
+                        "description": ""
+                         
+                    },
+                    {
+                        "required": true,
+                        "name": "email",
+                        "type": "string",
+                        "in": "path",
+                        "description": "email for verifying the code"
+                    }
+                ],
+                "responses": {
+                    "200" : {
+                        "$ref": "#/responses/tokens"
+                    },
+                    "401" : {
+                        "$ref": "#/responses/invalidCode"
+                    },
+                    "422" : {
+                        "description": "",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "code" : {
+                                   "$ref" : "#/definitions/validationCode"
+                                },
+                                "email" : {
+                                    "type" : "object", 
+                                    "properties": {
+                                        "name" : {
+                                            "type" : "string",
+                                            "example" : "EMAIL_NOT_EXISTS"
+                                        },
+                                        "message" : {
+                                            "type" : "string",
+                                            "example" : "email not exists please create account first"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/password/:code" : {
+            "get": {
+                "tags": ["auth"],
+                "consumes" : ["application/json"],
+                "produces" : ["application/json"],
+                "parameters": [
+                    {
+                        "required": true,
+                        "name": "code",
+                        "type": "string",
+                        "in": "path",
+                        "description": ""
+                         
+                    },
+                    {
+                        "required": true,
+                        "name": "email",
+                        "type": "string",
+                        "in": "path",
+                        "description": "email for verifying the code"
+                    }
+                ],
+                "responses": {
+                    "200" : {
+                        "description": "ok",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "name" : {
+                                    "type" : "string",
+                                    "example" : "PASSWORD_RESET"
+                                },
+                                "message" : {
+                                    "type" : "string",
+                                    "example" : "password reset successfuly"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "$ref": "#/responses/invalidCode"
+                    },
+                    "422" : {
+                        "description": "",
+                        "schema" : {
+                            "type" : "object",
+                            "properties": {
+                                "code" : {
+                                   "$ref" : "#/definitions/validationCode"
+                                },
+                                "email" : {
+                                    "type" : "object", 
+                                    "properties": {
+                                        "name" : {
+                                            "type" : "string",
+                                            "example" : "EMAIL_NOT_EXISTS"
+                                        },
+                                        "message" : {
+                                            "type" : "string",
+                                            "example" : "email not exists please create account first"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+    },
+    "responses": {
+        "invalidCode" : {
+            "description": "incorrect code happens when user send incorrect code ",
+            "schema" : {
+                "type" : "object",
+                "properties": {
+                    "name" : {
+                        "type" : "string",
+                        "example" : "INCORRECT_CODE"
+                    },
+                    "message" : {
+                        "type" : "string",
+                        "example" : "code is incorrect"
+                    }
+                }
+            }
+        },
+        "tokens" : {
+            "description": "returning credintials for the user",
+            "schema" : {
+                "type" : "object",
+                "properties": {
+                    "ACCESS_TOKEN" : {
+                        "type" : "string"
+                    },
+                    "REFRESH_TOKEN" : {
+                        "type" : "string"
+                    },
+                    "Token_type" : {
+                        "type" : "string",
+                        "example" : "bearer"
+                    }
+                }
+            }
+        },
+        "EmailNotExists" : {
+            "description": "",
+            "schema" : {
+            "type" : "object",
+            "properties": {
+                "name" : {
+                    "type" : "string",
+                    "example" : "EMAIL_NOT_EXISTS"
+                },
+                "message" : {
+                    "type" : "string",
+                    "example" : "email not exists please create account first"
+                }
+            }
+        }
+        }
+        
+    },
+    "definitions": {
+        "verifyCode" : {
+            "type" : "string",
+            "example" : "66b5322296e5"  
+        },
+        "validationCode" : {
+            "type" : "object",
+            "properties": {
+                "name" : {
+                    "type" : "string",
+                    "example" : "INVALID_CODE"
+                },
+                "message" : {
+                    "type" : "string",
+                    "example" : "code is invalid"
+                }
+            }
+        },
+        "password" : {
+            "type" : "string",
+            "minLength": 8, 
+            "pattern": "Test123$$", 
+            "title": "user's Password", 
+            "description": "password must contain at least 1 Lowercase , 1 Uppercase , 2 Symbols , 2 numbers "
+        },
+        "address" : {
+            "type" : "object",
+            "properties": {
+                "street" : {
+                    "type" : "string"
+                },
+                "city" : {
+                    "type" : "string"
+                },
+                "country" : {
+                    "type" : "string"
+                },
+                "postalCode" : {
+                    "type" : "string"
+                }
+            }
+        },
+        "phone" : {
+            "type" : "object",
+            "properties": {
+                "code" : {
+                    "type" : "string"
+                },
+                "number" : {
+                    "type" : "string"
+                }
+            }
+        },
+        "email" : {
+            "type" : "string",
+            "minLength": 7,
+            "maxLength": 25, 
+            "title": "user's email",
+            "description": "Here is the description about user's email field"
+        }
+    }
+}
